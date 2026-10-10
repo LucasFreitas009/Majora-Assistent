@@ -2,6 +2,7 @@ package br.com.majora.assistent.service;
 
 import br.com.majora.assistent.model.request.commands.CommandInstruction;
 import br.com.majora.assistent.model.request.commands.CommandResult;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,41 +10,45 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
+@Service
 public class CommandService {
     public CommandResult execute(CommandInstruction instruction) {
 
         List<String> command = instruction.getCommand();
 
-        try {
-            ProcessBuilder builder = new ProcessBuilder(command);
-            Process process = builder.start();
+        if(command != null) {
 
-            CommandResult commandResult = new CommandResult();
+            try {
+                ProcessBuilder builder = new ProcessBuilder(command);
+                Process process = builder.start();
 
-            Thread threadStdout = new Thread(() -> {
-                commandResult.setStdout(read(process.getInputStream()));
+                CommandResult commandResult = new CommandResult();
 
-            });
+                Thread threadStdout = new Thread(() -> {
+                    commandResult.setStdout(read(process.getInputStream()));
 
-            Thread threadStderr = new Thread(() -> {
-               commandResult.setStderr(read(process.getErrorStream()));
-            });
+                });
 
-            threadStdout.start();
-            threadStderr.start();
+                Thread threadStderr = new Thread(() -> {
+                    commandResult.setStderr(read(process.getErrorStream()));
+                });
 
-            int status = process.waitFor();
+                threadStdout.start();
+                threadStderr.start();
 
-            threadStdout.join();
-            threadStderr.join();
+                int status = process.waitFor();
 
-            commandResult.setStatus(status);
+                threadStdout.join();
+                threadStderr.join();
 
-            return commandResult;
+                commandResult.setStatus(status);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                return commandResult;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
         return null;
     }
