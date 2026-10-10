@@ -55,6 +55,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.alphacephei</groupId>
+			<artifactId>vosk</artifactId>
+			<version>0.3.38</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
