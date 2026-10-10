@@ -24,13 +24,13 @@ public class MajoraDecision {
             CommandResult resultLoop = commandService.execute(instruction);
             instruction = majoraService.send(resultLoop.toString(), modelLLM);
 
-
+            System.out.println("LOG LOOP DE ENVIO");
             System.out.println(resultLoop.getStdout());
             System.out.println(instruction.getCommand());
             System.out.println(instruction.getContext());
 
         }
 
-        return instruction.getContext();
+        return "Encerrado...";
     }
 }

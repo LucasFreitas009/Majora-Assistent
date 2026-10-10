@@ -1,6 +1,7 @@
 package br.com.majora.assistent.service.majoraClient;
 
 import br.com.majora.assistent.model.request.MajoraRequest;
+import br.com.majora.assistent.model.request.Messages;
 import br.com.majora.assistent.model.response.MajoraResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import java.util.List;
 public class MajoraHttp {
 
     private final RestTemplate rest;
+    List<Messages> messages = new ArrayList<>();
 
     public MajoraHttp(RestTemplate rest) {
         this.rest = rest;
@@ -25,19 +27,27 @@ public class MajoraHttp {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         MajoraRequest request = new MajoraRequest();
-
         request.setModel(modelLLM);
 
-        MajoraRequest.Messages message = new MajoraRequest.Messages();
+        Messages message = new Messages();
+        message.setRole("user");
         message.setContent(content);
 
-        List<MajoraRequest.Messages> messages = new ArrayList<>();
+        messages.add(message);
+
         request.setMessages(messages);
-        request.getMessages().add(message);
 
         HttpEntity<MajoraRequest> entity = new HttpEntity<>(request, headers);
 
         ResponseEntity<MajoraResponse> response = rest.postForEntity("http://localhost:11434/api/chat", entity, MajoraResponse.class);
+
+        messages.add(response.getBody().getMessage());
+
+        System.out.println("HISTORICO DE MENSAGENS");
+        for(Messages message1 : messages) {
+            System.out.println(message1.getRole());
+            System.out.println(message1.getContent());
+        }
 
         return response.getBody().getMessage().getContent();
     }

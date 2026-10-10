@@ -25,7 +25,7 @@ public class AssistentApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		System.out.println(decision.decisionLoop("Crie no diretório pessoal uma pasta chamada zeta e crie um arquivo teste.txt nela", "majora:latest"));
+		System.out.println(decision.decisionLoop("Crie dois arquivos para mim na pasta /home/lucas/projetos com os nomes teste1.txt e teste2.txt", "majora:latest"));
 
 
 	}

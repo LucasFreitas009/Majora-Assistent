@@ -1,5 +1,7 @@
 package br.com.majora.assistent.model.response;
 
+import br.com.majora.assistent.model.request.Messages;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +10,9 @@ import lombok.Setter;
 public class MajoraResponse {
     private String model;
     private String created_at;
-    private Message message;
+
+    @JsonProperty("message")
+    private Messages message;
     private boolean done;
     private String done_reason;
     private long total_duration;
@@ -17,11 +21,4 @@ public class MajoraResponse {
     private long prompt_eval_duration;
     private int eval_count;
     private long eval_duration;
-
-    @Getter
-    @Setter
-    public static class Message {
-        private String role;
-        private String content;
-    }
 }

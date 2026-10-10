@@ -11,13 +11,6 @@ import java.util.List;
 public class MajoraRequest {
 	private String model;
 	private List<Messages> messages;
-	private boolean think = false;
+	private boolean think = true;
 	private boolean stream = false;
-	
-	@Getter
-	@Setter
-	public static class Messages {
-		private String role = "user";
-		private String content;
-	}
 }
