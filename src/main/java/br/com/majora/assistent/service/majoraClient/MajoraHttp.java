@@ -3,6 +3,8 @@ package br.com.majora.assistent.service.majoraClient;
 import br.com.majora.assistent.model.request.MajoraRequest;
 import br.com.majora.assistent.model.request.Messages;
 import br.com.majora.assistent.model.response.MajoraResponse;
+import br.com.majora.assistent.model.response.OllamaModels;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,6 +18,12 @@ import java.util.List;
 public class MajoraHttp {
 
     private final RestTemplate rest;
+
+    @Value("${ollama.url.chat}")
+    private String urlChat;
+
+    @Value("${ollama.url.tags}")
+    private String urlTags;
     List<Messages> messages = new ArrayList<>();
 
     public MajoraHttp(RestTemplate rest) {
@@ -39,7 +47,7 @@ public class MajoraHttp {
 
         HttpEntity<MajoraRequest> entity = new HttpEntity<>(request, headers);
 
-        ResponseEntity<MajoraResponse> response = rest.postForEntity("http://localhost:11434/api/chat", entity, MajoraResponse.class);
+        ResponseEntity<MajoraResponse> response = rest.postForEntity(urlChat, entity, MajoraResponse.class);
 
         messages.add(response.getBody().getMessage());
 
@@ -50,5 +58,11 @@ public class MajoraHttp {
         }
 
         return response.getBody().getMessage().getContent();
+    }
+
+    public List<OllamaModels.Models> getModels() {
+        ResponseEntity<OllamaModels> response = rest.getForEntity(urlTags, OllamaModels.class);
+
+        return response.getBody().getModels();
     }
 }

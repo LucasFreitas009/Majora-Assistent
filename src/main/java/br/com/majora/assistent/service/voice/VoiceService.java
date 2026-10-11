@@ -12,8 +12,8 @@ public class VoiceService {
         this.speechRecognitionService = speechRecognitionService;
     }
 
-    public void startListening() throws Exception {
-        audioCaptureService.capture(speechRecognitionService);
+    public void startListening(String modelLLM) throws Exception {
+        audioCaptureService.capture(speechRecognitionService, modelLLM);
     }
 
 }

@@ -1,5 +1,6 @@
 package br.com.majora.assistent.service.voice;
 
+import br.com.majora.assistent.service.majoraClient.MajoraDecision;
 import br.com.majora.assistent.service.majoraClient.MajoraService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -20,13 +21,13 @@ public class SpeechRecognitionService implements AudioChunkHandler {
 
     private Model model;
     private Recognizer recognizer;
-    private final MajoraService majoraService;
+    private final MajoraDecision decisionService;
     private final ObjectMapper mapper;
     private static final Pattern WAKE_WORD_PATTERN = Pattern.compile("^\\bcomputador\\b", Pattern.CASE_INSENSITIVE);
 
-    public SpeechRecognitionService(MajoraService majoraService, ObjectMapper mapper) {
+    public SpeechRecognitionService(MajoraDecision decisionService, ObjectMapper mapper) {
         this.mapper = mapper;
-        this.majoraService = majoraService;
+        this.decisionService = decisionService;
     }
 
     @PostConstruct
@@ -36,7 +37,7 @@ public class SpeechRecognitionService implements AudioChunkHandler {
     }
 
     @Override
-    public void onAudioChunk(byte[] buffer, int bytesRead) {
+    public void onAudioChunk(byte[] buffer, int bytesRead, String modelLLM) {
         if(!recognizer.acceptWaveForm(buffer, bytesRead)) {
             return;
             //System.out.println(recognizer.getFinalResult());
@@ -60,9 +61,8 @@ public class SpeechRecognitionService implements AudioChunkHandler {
             if (WAKE_WORD_PATTERN.matcher(text).find()) {
                 System.out.println("Processando Comando...\n");
 
-                majoraService.send(text, "majora:latest");
+                decisionService.decisionLoop(text, modelLLM);
 
-                System.out.println("Aguardando nova requisição...");
             }
 
         } catch (Exception e) {

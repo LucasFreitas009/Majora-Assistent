@@ -16,7 +16,7 @@ public class AudioCaptureService {
             false
     );
 
-    public void capture(AudioChunkHandler handler) throws LineUnavailableException {
+    public void capture(AudioChunkHandler handler, String modelLLM) throws LineUnavailableException {
         microphone = getMicrophone();
 
         try {
@@ -32,7 +32,7 @@ public class AudioCaptureService {
                 int bytesRead = microphone.read(buffer, 0, buffer.length);
 
                 if(bytesRead > 0) {
-                    handler.onAudioChunk(buffer, bytesRead);
+                    handler.onAudioChunk(buffer, bytesRead, modelLLM);
                 }
             }
         } finally {
