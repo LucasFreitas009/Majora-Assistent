@@ -15,11 +15,12 @@ public class CommandResult {
     private int status;
 
 
-    public String toMajora() {
+    public String toMajora(String userContent) {
         return String.format("""
+                [ORIGINAL CONTEXT]: %s
                 [STDOUT]: %s
                 [STDERR]: %s
                 [STATUS]: %d
-                """,stdout, stderr, status);
+                """, userContent,stdout, stderr, status);
     }
 }

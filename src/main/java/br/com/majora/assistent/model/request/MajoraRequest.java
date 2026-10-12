@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 public class MajoraRequest {
 	private String model;
+	private String format = "json";
 	private List<Messages> messages;
 	private boolean think = true;
 	private boolean stream = false;

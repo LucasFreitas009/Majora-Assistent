@@ -44,7 +44,7 @@ public class MajoraDecision {
                 return;
             }
 
-            instruction = majoraService.send(resultLoop.toMajora(), modelLLM);
+            instruction = majoraService.send(resultLoop.toMajora(content), modelLLM);
             /*System.out.println("LOG LOOP DE ENVIO");
             System.out.println(resultLoop.getStdout());
             System.out.println(instruction.getCommand());
