@@ -15,11 +15,10 @@ public class LogAnimation implements MajoraUserLog, MajoraCommandEmptyLog {
             String stderr = commandResult.getStderr();
             int status = commandResult.getStatus();
 
-            System.out.println("\n[COMANDO EXECUTADO]: " + command);
-
+            System.out.println();
             System.out.print("=".repeat(context.length() + 11));
-            System.out.print("\n[MAJORA]: ");
-
+            System.out.println();
+            System.out.print("[MAJORA]: ");
 
             for(char character : context.toCharArray()) {
                 System.out.print(character);
@@ -32,8 +31,10 @@ public class LogAnimation implements MajoraUserLog, MajoraCommandEmptyLog {
             }
 
             System.out.println();
-
             System.out.println("=".repeat(context.length() + 11));
+
+            System.out.println("\n[COMANDO EXECUTADO]: " + command);
+
 
             System.out.println();
 
@@ -51,8 +52,9 @@ public class LogAnimation implements MajoraUserLog, MajoraCommandEmptyLog {
     public Thread isEmpty(String context) {
         Thread log = new Thread(() -> {
 
-            System.out.println("=".repeat(context.length() + 11));
-            System.out.print("\n[MAJORA]: ");
+            System.out.print("=".repeat(context.length() + 11));
+            System.out.println();
+            System.out.print("[MAJORA]: ");
 
             for(char character : context.toCharArray()) {
                 System.out.print(character);

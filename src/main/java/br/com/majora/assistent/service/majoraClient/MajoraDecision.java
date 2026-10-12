@@ -5,8 +5,9 @@ import br.com.majora.assistent.model.request.commands.CommandResult;
 import br.com.majora.assistent.service.CommandService;
 import br.com.majora.assistent.service.cliServices.animations.MajoraCommandEmptyLog;
 import br.com.majora.assistent.service.cliServices.animations.MajoraUserLog;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class MajoraDecision {
     private final MajoraService majoraService;
     private final CommandService commandService;

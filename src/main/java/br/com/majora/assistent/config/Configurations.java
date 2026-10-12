@@ -16,14 +16,4 @@ public class Configurations {
     RestTemplate restTemplate() {
         return new RestTemplate();
     }
-
-    @Bean
-    MajoraHttp majoraHttp(RestTemplate restTemplate) {
-        return new MajoraHttp(restTemplate);
-    }
-
-    @Bean
-    MajoraDecision majoraDecision(MajoraService majoraService, CommandService commandService) {
-        return new MajoraDecision(majoraService, commandService);
-    }
 }

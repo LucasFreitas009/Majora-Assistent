@@ -4,20 +4,41 @@ import br.com.majora.assistent.model.request.MajoraRequest;
 import br.com.majora.assistent.model.request.Messages;
 import br.com.majora.assistent.model.response.MajoraResponse;
 import br.com.majora.assistent.model.response.OllamaModels;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Service
 public class MajoraHttp {
 
     private final RestTemplate rest;
+    private final String schemaJson = """
+    {
+        "type": "object",
+        "properties": {
+            "command": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "context": {
+                "type": "string"
+            }
+        },
+        "required": ["command", "context"],
+        "additionalProperties": false
+    }
+    """;
 
     @Value("${ollama.url.chat}")
     private String urlChat;
@@ -26,8 +47,11 @@ public class MajoraHttp {
     private String urlTags;
     List<Messages> messages = new ArrayList<>();
 
-    public MajoraHttp(RestTemplate rest) {
+    private final ObjectMapper mapper;
+
+    public MajoraHttp(RestTemplate rest, ObjectMapper mapper) {
         this.rest = rest;
+        this.mapper = mapper;
     }
 
     public String response(String content, String modelLLM) {
@@ -36,6 +60,7 @@ public class MajoraHttp {
 
         MajoraRequest request = new MajoraRequest();
         request.setModel(modelLLM);
+        request.setFormat(mapper.readTree(schemaJson));
 
         Messages message = new Messages();
         message.setRole("user");
