@@ -41,6 +41,8 @@ public class CommandService {
                 threadStdout.join();
                 threadStderr.join();
 
+                commandResult.setCommand(instruction.getCommand());
+                commandResult.setContext(instruction.getContext());
                 commandResult.setStatus(status);
 
                 return commandResult;

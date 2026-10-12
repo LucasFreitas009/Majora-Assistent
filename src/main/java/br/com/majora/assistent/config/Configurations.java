@@ -23,7 +23,7 @@ public class Configurations {
     }
 
     @Bean
-    MajoraDecision majoraDecision(MajoraService majoraService, CommandService commandService, ObjectMapper mapper) {
-        return new MajoraDecision(majoraService, commandService, mapper);
+    MajoraDecision majoraDecision(MajoraService majoraService, CommandService commandService) {
+        return new MajoraDecision(majoraService, commandService);
     }
 }

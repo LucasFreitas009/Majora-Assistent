@@ -1,16 +1,10 @@
 package br.com.majora.assistent;
 
-import br.com.majora.assistent.model.request.commands.CommandInstruction;
-import br.com.majora.assistent.model.request.commands.CommandResult;
-import br.com.majora.assistent.service.CommandService;
-import br.com.majora.assistent.service.majoraClient.MajoraDecision;
 import br.com.majora.assistent.service.voice.VoiceService;
-import br.com.majora.assistent.view.MajoraCLI;
+import br.com.majora.assistent.service.cliServices.MajoraCLI;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.List;
 
 @SpringBootApplication
 public class AssistentApplication implements CommandLineRunner {
@@ -32,6 +26,6 @@ public class AssistentApplication implements CommandLineRunner {
 
 		String model = cli.menu();
 
-		voiceService.startListening(model);
+		voiceService.startListening(model, cli::userLog, cli::isEmpty);
 	}
 }

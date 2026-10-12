@@ -1,9 +1,9 @@
 package br.com.majora.assistent.service.voice;
 
+import br.com.majora.assistent.service.cliServices.animations.MajoraCommandEmptyLog;
+import br.com.majora.assistent.service.cliServices.animations.MajoraUserLog;
 import br.com.majora.assistent.service.majoraClient.MajoraDecision;
-import br.com.majora.assistent.service.majoraClient.MajoraService;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.vosk.Model;
@@ -18,6 +18,8 @@ public class SpeechRecognitionService implements AudioChunkHandler {
 
     @Value("${vosk-path}")
     private String modelPath;
+
+    private boolean keyWord = false;
 
     private Model model;
     private Recognizer recognizer;
@@ -37,7 +39,7 @@ public class SpeechRecognitionService implements AudioChunkHandler {
     }
 
     @Override
-    public void onAudioChunk(byte[] buffer, int bytesRead, String modelLLM) {
+    public void onAudioChunk(byte[] buffer, int bytesRead, String modelLLM, MajoraUserLog log, MajoraCommandEmptyLog logCommandEmpty) {
         if(!recognizer.acceptWaveForm(buffer, bytesRead)) {
             return;
             //System.out.println(recognizer.getFinalResult());
@@ -58,12 +60,24 @@ public class SpeechRecognitionService implements AudioChunkHandler {
 
             //System.out.println("Texto reconhecido: " + text);
 
-            if (WAKE_WORD_PATTERN.matcher(text).find()) {
-                System.out.println("Processando Comando...\n");
+            if(!keyWord) {
+                if(WAKE_WORD_PATTERN.matcher(text).find()) {
+                    keyWord = true;
+                    System.out.println("[COMANDO RECONHECIDO]");
+                    System.out.println("\n[Aguardando instruções...]");
 
-                decisionService.decisionLoop(text, modelLLM);
+                }
 
+                return;
             }
+
+                keyWord = false;
+                System.out.print("\n[EXECUTANDO COMANDO]: " + text);
+                System.out.println();
+
+                decisionService.decisionLoop(text, modelLLM, log, logCommandEmpty);
+
+                System.out.println("\n[ESCUTANDO]");
 
         } catch (Exception e) {
             System.err.println("Erro ao interpretar o resultado do vosk: " + e.getMessage());

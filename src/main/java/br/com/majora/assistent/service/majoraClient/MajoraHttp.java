@@ -51,12 +51,13 @@ public class MajoraHttp {
 
         messages.add(response.getBody().getMessage());
 
-        System.out.println("HISTORICO DE MENSAGENS");
+       /* System.out.println("HISTORICO DE MENSAGENS");
         for(Messages message1 : messages) {
             System.out.println(message1.getRole());
             System.out.println(message1.getContent());
-        }
+        }*/
 
+        //System.out.println(response.getBody().getMessage().getContent());
         return response.getBody().getMessage().getContent();
     }
 

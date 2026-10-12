@@ -1,5 +1,7 @@
 package br.com.majora.assistent.service.voice;
 
+import br.com.majora.assistent.service.cliServices.animations.MajoraCommandEmptyLog;
+import br.com.majora.assistent.service.cliServices.animations.MajoraUserLog;
 import org.springframework.stereotype.Service;
 
 import javax.sound.sampled.*;
@@ -16,7 +18,7 @@ public class AudioCaptureService {
             false
     );
 
-    public void capture(AudioChunkHandler handler, String modelLLM) throws LineUnavailableException {
+    public void capture(AudioChunkHandler handler, String modelLLM, MajoraUserLog log, MajoraCommandEmptyLog logCommandEmpty) throws LineUnavailableException {
         microphone = getMicrophone();
 
         try {
@@ -32,7 +34,7 @@ public class AudioCaptureService {
                 int bytesRead = microphone.read(buffer, 0, buffer.length);
 
                 if(bytesRead > 0) {
-                    handler.onAudioChunk(buffer, bytesRead, modelLLM);
+                    handler.onAudioChunk(buffer, bytesRead, modelLLM, log, logCommandEmpty);
                 }
             }
         } finally {

@@ -1,7 +1,6 @@
-package br.com.majora.assistent.view.cliServices;
+package br.com.majora.assistent.service.cliServices.animations;
 
 import br.com.majora.assistent.model.response.OllamaModels;
-import org.jline.terminal.Attributes;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.springframework.stereotype.Service;
@@ -13,8 +12,6 @@ import java.util.List;
 @Service
 public class ModelSelect {
     public String selectModel(List<OllamaModels.Models> models) {
-
-
         try {
              Terminal terminal = TerminalBuilder.builder()
                     .system(true)

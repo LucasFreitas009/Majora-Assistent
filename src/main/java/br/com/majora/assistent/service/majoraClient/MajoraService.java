@@ -19,7 +19,6 @@ public class MajoraService {
     }
 
     public CommandInstruction send(String content, String modelLLM) {
-
         return mapper.readValue(majoraHttp.response(content, modelLLM), CommandInstruction.class);
     }
 
