@@ -15,23 +15,27 @@ public class LogAnimation implements MajoraUserLog, MajoraCommandEmptyLog {
             String stderr = commandResult.getStderr();
             int status = commandResult.getStatus();
 
-            System.out.println();
-            System.out.print("=".repeat(context.length() + 11));
-            System.out.println();
-            System.out.print("[MAJORA]: ");
+            System.out.println("=".repeat(context.length() + 11));
+            System.out.println("[MAJORA]: ");
+            System.out.println("=".repeat(context.length() + 11));
+
+            System.out.print("\u001B[2A");
+            System.out.print("\r[MAJORA]: ");
 
             for(char character : context.toCharArray()) {
                 System.out.print(character);
+
                 try {
                     Thread.sleep(30);
                 }catch(InterruptedException e) {
                     Thread.currentThread().interrupt();
                     return;
                 }
+
             }
 
+            System.out.print("\u001B[2B");
             System.out.println();
-            System.out.println("=".repeat(context.length() + 11));
 
             System.out.println("\n[COMANDO EXECUTADO]: " + command);
 
@@ -52,12 +56,16 @@ public class LogAnimation implements MajoraUserLog, MajoraCommandEmptyLog {
     public Thread isEmpty(String context) {
         Thread log = new Thread(() -> {
 
-            System.out.print("=".repeat(context.length() + 11));
-            System.out.println();
-            System.out.print("[MAJORA]: ");
+            System.out.println("=".repeat(context.length() + 11));
+            System.out.println("[MAJORA]: ");
+            System.out.println("=".repeat(context.length() + 11));
+
+            System.out.print("\u001B[2A");
+            System.out.print("\r[MAJORA]: ");
 
             for(char character : context.toCharArray()) {
                 System.out.print(character);
+                
                 try {
                     Thread.sleep(30);
                 }catch(InterruptedException e) {
@@ -66,10 +74,7 @@ public class LogAnimation implements MajoraUserLog, MajoraCommandEmptyLog {
                 }
             }
 
-            System.out.println();
-
-            System.out.print("=".repeat(context.length() + 11));
-
+            System.out.print("\u001B[2B");
             System.out.println();
         });
 

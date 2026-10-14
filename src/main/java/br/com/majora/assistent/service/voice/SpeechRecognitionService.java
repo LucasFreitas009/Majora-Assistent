@@ -6,6 +6,8 @@ import br.com.majora.assistent.service.majoraClient.MajoraDecision;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.vosk.LibVosk;
+import org.vosk.LogLevel;
 import org.vosk.Model;
 import org.vosk.Recognizer;
 import tools.jackson.databind.ObjectMapper;
@@ -34,8 +36,20 @@ public class SpeechRecognitionService implements AudioChunkHandler {
 
     @PostConstruct
     public void initialize() throws Exception {
+        LibVosk.setLogLevel(LogLevel.WARNINGS);
+
+        Thread loading = loadingVosk();
+
+        try {
+
         model = new Model(modelPath);
         recognizer = new Recognizer(model, 16000);
+
+        } finally {
+            loading.interrupt();
+            loading.join();
+        }
+
     }
 
     @Override
@@ -82,6 +96,36 @@ public class SpeechRecognitionService implements AudioChunkHandler {
         } catch (Exception e) {
             System.err.println("Erro ao interpretar o resultado do vosk: " + e.getMessage());
         }
+    }
+
+    private Thread loadingVosk() {
+        Thread loading = new Thread(() -> {
+            System.out.println("""
+                    ╔════════════════════╗
+                    ║                    ║
+                    ║       MAJORA       ║
+                    ║                    ║
+                    ╚════════════════════╝
+                    """);
+            try {
+
+                Thread.sleep(500);
+
+                String[] spinner = {"\\", "|", "/", "-"};
+
+                while(!Thread.currentThread().isInterrupted()) {
+                    for(int i = 0; i < 10; i++) {
+                        System.out.printf("\r[Iniciando Sistema %s ]", spinner[i % spinner.length]);
+                        Thread.sleep(500);
+                    }
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+
+        loading.start();
+        return loading;
     }
 
    // @PreDestroy
