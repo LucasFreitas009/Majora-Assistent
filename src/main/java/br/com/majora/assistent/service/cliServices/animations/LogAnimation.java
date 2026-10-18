@@ -9,11 +9,10 @@ public class LogAnimation implements MajoraUserLog, MajoraCommandEmptyLog {
     @Override
     public Thread userLog(CommandResult commandResult) {
         Thread log = new Thread(() -> {
-            String command = String.join(" ", commandResult.getCommand());
-            String context = commandResult.getContext();
-            String stdout = commandResult.getStdout();
-            String stderr = commandResult.getStderr();
-            int status = commandResult.getStatus();
+            String command = String.join(" ", commandResult.getData().get(0).get("command"));
+            String context = commandResult.getOriginal_context();
+            String stdout = commandResult.getData().get(0).get("stdout");
+            String stderr = commandResult.getData().get(0).get("stderr");
 
             System.out.println("=".repeat(context.length() + 11));
             System.out.println("[MAJORA]: ");
@@ -44,7 +43,6 @@ public class LogAnimation implements MajoraUserLog, MajoraCommandEmptyLog {
 
             System.out.println("[SAÍDA NO TERMINAL]: " + stdout);
             System.out.println("[ERROR]: " + stderr);
-            System.out.println("[CÓDIGO DE STATUS]: " + status);
         });
 
         log.start();

@@ -1,5 +1,6 @@
 package br.com.majora.assistent;
 
+import br.com.majora.assistent.service.cliServices.ProfileSelect;
 import br.com.majora.assistent.service.voice.VoiceService;
 import br.com.majora.assistent.service.cliServices.MajoraCLI;
 import org.springframework.boot.CommandLineRunner;
@@ -17,7 +18,13 @@ public class AssistentApplication implements CommandLineRunner {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(AssistentApplication.class, args);
+		ProfileSelect start = new ProfileSelect();
+		String profile = start.selectProfile();
+
+		SpringApplication application = new SpringApplication(AssistentApplication.class);
+		application.setAdditionalProfiles(profile);
+
+		application.run(args);
 	}
 
 	@Override

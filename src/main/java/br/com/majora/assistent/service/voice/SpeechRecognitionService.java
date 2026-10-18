@@ -89,7 +89,7 @@ public class SpeechRecognitionService implements AudioChunkHandler {
                 System.out.print("\n[EXECUTANDO COMANDO]: " + text);
                 System.out.println();
 
-                decisionService.decisionLoop(text, modelLLM, log, logCommandEmpty);
+                decisionService.decision(text, modelLLM, log, logCommandEmpty);
 
                 System.out.println("\n[ESCUTANDO]");
 

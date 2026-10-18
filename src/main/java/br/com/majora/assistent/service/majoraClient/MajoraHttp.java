@@ -22,22 +22,26 @@ public class MajoraHttp {
 
     private final RestTemplate rest;
     private final String schemaJson = """
-    {
-        "type": "object",
-        "properties": {
-            "command": {
-                "type": "array",
-                "items": {
-                    "type": "string"
+             {
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "type": "string",
+                            "enum": ["execute_command"]
+                        },
+                        "command": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "context": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["action", "command", "context"],
+                    "additionalProperties": false
                 }
-            },
-            "context": {
-                "type": "string"
-            }
-        },
-        "required": ["command", "context"],
-        "additionalProperties": false
-    }
     """;
 
     @Value("${ollama.url.chat}")

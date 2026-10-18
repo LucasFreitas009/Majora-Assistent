@@ -1,64 +1,48 @@
 package br.com.majora.assistent.service.majoraClient;
 
+import br.com.majora.assistent.model.entitys.Events;
+import br.com.majora.assistent.model.entitys.Interactions;
 import br.com.majora.assistent.model.request.commands.CommandInstruction;
 import br.com.majora.assistent.model.request.commands.CommandResult;
 import br.com.majora.assistent.service.CommandService;
 import br.com.majora.assistent.service.cliServices.animations.MajoraCommandEmptyLog;
 import br.com.majora.assistent.service.cliServices.animations.MajoraUserLog;
+import br.com.majora.assistent.service.memory.MajoraMemory;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Service
 public class MajoraDecision {
     private final MajoraService majoraService;
     private final CommandService commandService;
+    private final ObjectMapper mapper;
+    private final DecisionLoop decisionLoop;
 
-    public MajoraDecision(MajoraService majoraService, CommandService commandService) {
+    public MajoraDecision(MajoraService majoraService, CommandService commandService, ObjectMapper mapper, DecisionLoop decisionLoop) {
         this.majoraService = majoraService;
         this.commandService = commandService;
+        this.mapper = mapper;
+        this.decisionLoop = decisionLoop;
     }
 
-    public void decisionLoop(String content, String modelLLM, MajoraUserLog log, MajoraCommandEmptyLog logCommandEmpty) {
+    public void decision(String content, String modelLLM, MajoraUserLog log, MajoraCommandEmptyLog logCommandEmpty) {
         CommandInstruction instruction = majoraService.send(content, modelLLM);
 
-        if(instruction.getCommand().isEmpty()) {
-            Thread response = logCommandEmpty.isEmpty(instruction.getContext());
+        decisionLoop.decisionLoop(instruction, content, modelLLM, commandService, majoraService, mapper, log, logCommandEmpty);
+    }
 
-            try {
-                response.join();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return;
-            }
+    private boolean verifyAction(String action) {
+        if(action.equalsIgnoreCase("execute_command")) {
+            return true;
 
-            return;
-        }
+        } else if(action.equalsIgnoreCase("database_query")) {
+            return false;
 
-        while(!instruction.getCommand().isEmpty()) {
-            CommandResult resultLoop = commandService.execute(instruction);
-
-            Thread response = log.userLog(resultLoop);
-
-            try {
-                response.join();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return;
-            }
-
-            instruction = majoraService.send(resultLoop.toMajora(content), modelLLM);
-            /*System.out.println("LOG LOOP DE ENVIO");
-            System.out.println(resultLoop.getStdout());
-            System.out.println(instruction.getCommand());
-            System.out.println(instruction.getContext());*/
-
-        }
-
-        Thread finalResponse = logCommandEmpty.isEmpty(instruction.getContext());
-
-        try {
-            finalResponse.join();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        } else {
+            return true;
         }
     }
 }

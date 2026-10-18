@@ -1,9 +1,13 @@
 package br.com.majora.assistent.model.entitys;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 public class Events {
 
@@ -13,22 +17,19 @@ public class Events {
 
     @Column(
             name = "command",
-            nullable = false,
             length = 100
     )
     private String command;
 
     @Column(
             name = "standard_output",
-            nullable = false,
-            length = 200
+            columnDefinition = "TEXT"
     )
     private String stdout;
 
     @Column(
             name = "output_error",
-            nullable = false,
-            length = 200
+            columnDefinition = "TEXT"
     )
     private String stderr;
 
@@ -36,7 +37,14 @@ public class Events {
             name = "status",
             nullable = false
     )
-    private Integer status;
+    private Boolean success;
+
+    @Column(
+            name = "majora_response",
+            nullable = false,
+            length = 200
+    )
+    private String majoraResponse;
 
     @Column(
             name = "date_time",
@@ -49,5 +57,19 @@ public class Events {
             name = "interaction_id",
             nullable = false
     )
-    private Interactions interactions;
+    private Interactions interaction;
+
+    public Events(String command, String stdout, String stderr, Boolean success, String majoraResponse,LocalDateTime time, Interactions interaction) {
+        this.command = command;
+        this.stdout = stdout;
+        this.stderr = stderr;
+        this.success = success;
+        this.majoraResponse = majoraResponse;
+        this.time = time;
+        this.interaction = interaction;
+    }
+
+    public Events() {
+
+    }
 }
