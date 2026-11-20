@@ -9,10 +9,10 @@ public class LogAnimation implements MajoraUserLog, MajoraCommandEmptyLog {
     @Override
     public Thread userLog(CommandResult commandResult) {
         Thread log = new Thread(() -> {
-            String command = String.join(" ", commandResult.getData().get(0).get("command"));
+            String command = String.join(" ", (String) commandResult.getData().get(0).get("command"));
             String context = commandResult.getOriginal_context();
-            String stdout = commandResult.getData().get(0).get("stdout");
-            String stderr = commandResult.getData().get(0).get("stderr");
+            String stdout = (String) commandResult.getData().get(0).get("stdout");
+            String stderr = (String) commandResult.getData().get(0).get("stderr");
 
             System.out.println("=".repeat(context.length() + 11));
             System.out.println("[MAJORA]: ");

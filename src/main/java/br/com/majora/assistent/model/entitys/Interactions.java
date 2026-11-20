@@ -23,7 +23,7 @@ public class Interactions {
     private String userContext;
 
     @Column(
-            name = "date_time",
+            name = "dateTime",
             nullable = false
     )
     private LocalDateTime time;

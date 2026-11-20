@@ -15,6 +15,8 @@ public class VoiceService {
     }
 
     public void startListening(String modelLLM, MajoraUserLog log, MajoraCommandEmptyLog logCommandEmpty) throws Exception {
+        speechRecognitionService.initialize();
+
         audioCaptureService.capture(speechRecognitionService, modelLLM, log, logCommandEmpty);
     }
 
