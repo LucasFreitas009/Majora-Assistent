@@ -34,8 +34,12 @@ public class SpeechRecognitionService implements AudioChunkHandler {
         this.decisionService = decisionService;
     }
 
-    @PostConstruct
+
     public void initialize() throws Exception {
+        if(model != null) {
+            return;
+        }
+
         LibVosk.setLogLevel(LogLevel.WARNINGS);
 
         Thread loading = loadingVosk();
@@ -119,6 +123,8 @@ public class SpeechRecognitionService implements AudioChunkHandler {
                         Thread.sleep(500);
                     }
                 }
+
+                System.out.println();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }

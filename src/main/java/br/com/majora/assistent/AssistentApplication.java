@@ -1,5 +1,6 @@
 package br.com.majora.assistent;
 
+import br.com.majora.assistent.service.chat.ChatService;
 import br.com.majora.assistent.service.cliServices.ProfileSelect;
 import br.com.majora.assistent.service.voice.VoiceService;
 import br.com.majora.assistent.service.cliServices.MajoraCLI;
@@ -10,10 +11,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AssistentApplication implements CommandLineRunner {
 	final VoiceService voiceService;
+	final ChatService chatService;
 	final MajoraCLI cli;
 
-	public AssistentApplication(VoiceService voiceService, MajoraCLI cli) {
+	public AssistentApplication(VoiceService voiceService, ChatService chatService, MajoraCLI cli) {
 		this.voiceService = voiceService;
+		this.chatService = chatService;
 		this.cli = cli;
 	}
 
@@ -32,7 +35,13 @@ public class AssistentApplication implements CommandLineRunner {
 		//System.out.println(decision.decisionLoop("Crie dois arquivos para mim na pasta /home/lucas/projetos com os nomes teste1.txt e teste2.txt", "majora:latest"));
 
 		String model = cli.menu();
+		boolean chatOrVoice = cli.chatOrVoice();
 
-		voiceService.startListening(model, cli::userLog, cli::isEmpty);
+		if(chatOrVoice) {
+			chatService.startChat(model, cli::userLog, cli::isEmpty);
+		} else {
+			voiceService.startListening(model, cli::userLog, cli::isEmpty);
+		}
+
 	}
 }

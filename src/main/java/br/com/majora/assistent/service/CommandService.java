@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Service
 public class CommandService {
-    public CommandResult execute(CommandInstruction instruction) {
+    public CommandResult execute(CommandInstruction instruction, String originalContent) {
 
         String userHome = System.getProperty("user.home");
 
@@ -36,7 +36,7 @@ public class CommandService {
                 Process process = builder.start();
 
                 CommandResult commandResult = new CommandResult();
-                List<Map<String, String>> data = new ArrayList<>();
+                List<Map<String, Object>> data = new ArrayList<>();
                 commandResult.setData(data);
 
                 commandResult.getData().add(new HashMap<>());

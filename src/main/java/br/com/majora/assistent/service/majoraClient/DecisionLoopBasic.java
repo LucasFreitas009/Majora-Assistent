@@ -29,7 +29,7 @@ public class DecisionLoopBasic implements DecisionLoop{
         }
 
         while(!instruction.getCommand().isEmpty()) {
-            CommandResult resultLoop = commandService.execute(instruction);
+            CommandResult resultLoop = commandService.execute(instruction, content);
 
             //System.out.println(mapper.writeValueAsString(resultLoop));
 
