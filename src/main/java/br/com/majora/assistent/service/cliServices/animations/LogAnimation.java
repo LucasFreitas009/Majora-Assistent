@@ -7,10 +7,9 @@ import org.springframework.stereotype.Service;
 public class LogAnimation implements MajoraUserLog, MajoraCommandEmptyLog {
 
     @Override
-    public Thread userLog(CommandResult commandResult) {
+    public Thread userLog(CommandResult commandResult, String context) {
         Thread log = new Thread(() -> {
             String command = String.join(" ", (String) commandResult.getData().get(0).get("command"));
-            String context = commandResult.getOriginal_context();
             String stdout = (String) commandResult.getData().get(0).get("stdout");
             String stderr = (String) commandResult.getData().get(0).get("stderr");
 

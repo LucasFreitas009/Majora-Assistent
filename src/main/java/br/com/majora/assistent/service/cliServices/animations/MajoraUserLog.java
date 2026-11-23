@@ -5,5 +5,5 @@ import br.com.majora.assistent.model.request.commands.CommandResult;
 
 public interface MajoraUserLog {
 
-    Thread userLog(CommandResult commandResult);
+    Thread userLog(CommandResult commandResult, String context);
 }
