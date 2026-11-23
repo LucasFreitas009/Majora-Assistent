@@ -66,7 +66,7 @@ public class CommandService {
                     commandResult.setSuccess(true);
                 }
 
-                commandResult.setOriginal_context(instruction.getContext());
+                commandResult.setOriginal_context(originalContent);
 
                 /*commandResult.setCommand(instruction.getCommand());
                 commandResult.setContext(instruction.getContext());
@@ -75,7 +75,16 @@ public class CommandService {
                 return commandResult;
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Map<String, Object> error = new HashMap<>();
+                    error.put("type", e.getClass().getSimpleName());
+                    error.put("message", e.getMessage());
+
+
+                    CommandResult result = new CommandResult();
+                    result.setSuccess(false);
+                    result.setData(List.of(error));
+
+                    return result;
                 }
             }
 

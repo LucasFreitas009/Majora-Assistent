@@ -27,7 +27,7 @@ public class MajoraHttp {
                     "properties": {
                         "action": {
                             "type": "string",
-                            "enum": ["execute_command","query_select_all","noAction"]
+                            "enum": ["execute_command","query_select_all","browser_open","browser_inspect","browser_search","browser_click","noAction"]
                         },
                         "command": {
                             "type": "array",

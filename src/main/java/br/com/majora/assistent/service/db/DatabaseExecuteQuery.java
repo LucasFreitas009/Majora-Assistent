@@ -1,6 +1,7 @@
 package br.com.majora.assistent.service.db;
 
 import br.com.majora.assistent.model.request.commands.CommandResult;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Profile("memory")
 public class DatabaseExecuteQuery {
 
     private final ConnectionFactory conn;

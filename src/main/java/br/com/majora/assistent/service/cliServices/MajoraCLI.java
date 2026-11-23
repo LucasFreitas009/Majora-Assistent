@@ -29,8 +29,8 @@ public class MajoraCLI {
         return chatOrVoiceSelect.selectChatOrVoice();
     }
 
-    public Thread userLog(CommandResult commandResult) {
-        return logAnimation.userLog(commandResult);
+    public Thread userLog(CommandResult commandResult, String context) {
+        return logAnimation.userLog(commandResult, context);
     }
 
     public Thread isEmpty(String context) {
