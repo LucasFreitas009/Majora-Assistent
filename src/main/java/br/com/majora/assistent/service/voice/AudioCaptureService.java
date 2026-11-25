@@ -27,7 +27,7 @@ public class AudioCaptureService {
 
             byte[] buffer = new byte[4096];
 
-            System.out.println("Diga [COMPUTADOR] para começar conversa.\n");
+            System.out.println("\nDiga [COMPUTADOR] para começar conversa.\n");
 
             while(!Thread.currentThread().isInterrupted()) {
 

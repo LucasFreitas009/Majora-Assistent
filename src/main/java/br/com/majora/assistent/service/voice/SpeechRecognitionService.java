@@ -119,7 +119,7 @@ public class SpeechRecognitionService implements AudioChunkHandler {
 
                 while(!Thread.currentThread().isInterrupted()) {
                     for(int i = 0; i < 10; i++) {
-                        System.out.printf("\r[Iniciando Sistema %s ]", spinner[i % spinner.length]);
+                        System.out.printf("\r[Iniciando Sistema de voz %s ]", spinner[i % spinner.length]);
                         Thread.sleep(500);
                     }
                 }
