@@ -1,8 +1,13 @@
 package br.com.majora.assistent.service.cliServices.animations;
 
 import br.com.majora.assistent.model.response.OllamaModels;
+import org.jline.keymap.BindingReader;
+import org.jline.keymap.KeyMap;
+import org.jline.terminal.Attributes;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.InfoCmp;
+
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -11,66 +16,92 @@ import java.util.List;
 
 @Service
 public class ModelSelect {
+
     public String selectModel(List<OllamaModels.Models> models) {
-        try {
-             Terminal terminal = TerminalBuilder.builder()
-                    .system(true)
-                    .build();
 
-             terminal.enterRawMode();
+        List<String> options = new ArrayList<>();
 
-            List<String> options = new ArrayList<>();
+        for (OllamaModels.Models model : models) {
+            options.add(model.getName());
+        }
 
-            for(OllamaModels.Models model : models) {
-                options.add(model.getName());
-            }
+        if (options.isEmpty()) {
+            return null;
+        }
 
-            int selected = 0;
+        try (Terminal terminal = TerminalBuilder.builder()
+                .system(true)
+                .build()) {
 
-            while (true) {
+            Attributes originalAttributes = terminal.enterRawMode();
 
-                menu(terminal, options, selected);
+            try {
 
-                int key = terminal.reader().read();
+                terminal.puts(InfoCmp.Capability.keypad_xmit);
+                terminal.flush();
 
-                // Enter
-                if (key == '\n' || key == '\r') {
-                    break;
-                }
+                BindingReader bindingReader = new BindingReader(terminal.reader());
 
-                // ESC
-                if (key == 27) {
+                KeyMap<String> keyMap = new KeyMap<>();
 
-                    int second = terminal.reader().read();
+                keyMap.bind("UP", KeyMap.key(terminal, InfoCmp.Capability.key_up));
 
-                    if (second == '[') {
+                keyMap.bind("DOWN", KeyMap.key(terminal, InfoCmp.Capability.key_down));
 
-                        int third = terminal.reader().read();
+                keyMap.bind("ENTER", "\r", "\n");
 
-                        // seta pra cima
-                        if (third == 'A' && selected > 0) {
-                            selected--;
-                        }
 
-                        // seta pra baixo
-                        if (third == 'B' && selected < options.size() - 1) {
-                            selected++;
-                        }
+                keyMap.setNomatch("OTHER");
+                keyMap.setUnicode("OTHER");
+
+                int selected = 0;
+
+                while (true) {
+
+                    menu(terminal, options, selected);
+
+                    String key = bindingReader.readBinding(keyMap);
+
+                    if (key == null) {
+                        return null;
+                    }
+
+                    switch (key) {
+
+                        case "UP":
+                            if (selected > 0) {
+                                selected--;
+                            }
+                            break;
+
+                        case "DOWN":
+                            if (selected < options.size() - 1) {
+                                selected++;
+                            }
+                            break;
+
+                        case "ENTER":
+                            terminal.writer().println();
+                            terminal.writer().println(
+                                    options.get(selected) + " selecionado.\n"
+                            );
+
+                            terminal.flush();
+
+                            return options.get(selected);
                     }
                 }
+
+            } finally {
+
+                terminal.setAttributes(originalAttributes);
+
+                terminal.puts(InfoCmp.Capability.keypad_local);
+                terminal.flush();
             }
 
-            terminal.writer().println();
-            terminal.writer().println(options.get(selected) + " selecionado.\n");
-
-            terminal.writer().flush();
-
-            terminal.close();
-            return options.get(selected);
-
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-
         }
 
         return null;
@@ -78,16 +109,15 @@ public class ModelSelect {
 
     private void menu(Terminal terminal, List<String> options, int selected) {
 
-
         terminal.writer().print("\033[2J\033[H");
 
         terminal.writer().println("""
-				╔════════════════════════════╗
-				║                            ║
-				║     Seleção de modelo      ║
-				║                            ║
-				╚════════════════════════════╝
-				""");
+                ╔════════════════════════════╗
+                ║                            ║
+                ║     Seleção de modelo      ║
+                ║                            ║
+                ╚════════════════════════════╝
+                """);
 
         terminal.writer().println("Selecione um modelo:");
         terminal.writer().println();

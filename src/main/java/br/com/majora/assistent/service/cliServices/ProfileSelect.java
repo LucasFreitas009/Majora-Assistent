@@ -1,8 +1,12 @@
 package br.com.majora.assistent.service.cliServices;
 
 import br.com.majora.assistent.service.cliServices.cliEnum.Profiles;
+import org.jline.keymap.BindingReader;
+import org.jline.keymap.KeyMap;
+import org.jline.terminal.Attributes;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.InfoCmp;
 
 import java.io.IOException;
 import java.util.List;
@@ -10,61 +14,82 @@ import java.util.List;
 public class ProfileSelect {
 
     public String selectProfile() {
-        try {
-            Terminal terminal = TerminalBuilder.builder()
-                    .system(true)
-                    .build();
 
-            terminal.enterRawMode();
+        try (Terminal terminal = TerminalBuilder.builder()
+                .system(true)
+                .build()) {
 
-            List<String> options = List.of(Profiles.MEMORY.getMessage(), Profiles.BASIC.getMessage());
+            Attributes originalAttributes = terminal.enterRawMode();
 
-            int selected = 0;
+            try {
 
-            while (true) {
+                terminal.puts(InfoCmp.Capability.keypad_xmit);
+                terminal.flush();
 
-                menu(terminal, options, selected);
+                BindingReader bindingReader = new BindingReader(terminal.reader());
 
-                int key = terminal.reader().read();
+                KeyMap<String> keyMap = new KeyMap<>();
 
-                // Enter
-                if (key == '\n' || key == '\r') {
-                    break;
-                }
+                keyMap.bind("UP", KeyMap.key(terminal, InfoCmp.Capability.key_up));
 
-                // ESC
-                if (key == 27) {
+                keyMap.bind("DOWN", KeyMap.key(terminal, InfoCmp.Capability.key_down));
 
-                    int second = terminal.reader().read();
+                keyMap.bind("ENTER", "\r", "\n");
 
-                    if (second == '[') {
 
-                        int third = terminal.reader().read();
+                keyMap.setNomatch("OTHER");
+                keyMap.setUnicode("OTHER");
 
-                        // seta pra cima
-                        if (third == 'A' && selected > 0) {
-                            selected--;
-                        }
+                List<String> options = List.of(Profiles.MEMORY.getMessage(), Profiles.BASIC.getMessage());
 
-                        // seta pra baixo
-                        if (third == 'B' && selected < options.size() - 1) {
-                            selected++;
-                        }
+                int selected = 0;
+
+                while (true) {
+
+                    menu(terminal, options, selected);
+
+                    String key = bindingReader.readBinding(keyMap);
+
+                    if (key == null) {
+                        return null;
+                    }
+
+                    switch (key) {
+
+                        case "UP":
+                            if (selected > 0) {
+                                selected--;
+                            }
+                            break;
+
+                        case "DOWN":
+                            if (selected < options.size() - 1) {
+                                selected++;
+                            }
+                            break;
+
+                        case "ENTER":
+                            terminal.writer().println();
+                            terminal.writer().println(
+                                    options.get(selected) + " selecionado.\n"
+                            );
+
+                            terminal.flush();
+
+                            return options.get(selected);
                     }
                 }
+
+            } finally {
+
+                terminal.setAttributes(originalAttributes);
+
+                terminal.puts(InfoCmp.Capability.keypad_local);
+                terminal.flush();
             }
 
-            terminal.writer().println();
-            terminal.writer().println("Perfil " + options.get(selected) + " selecionado.\n");
-
-            terminal.writer().flush();
-
-            terminal.close();
-            return options.get(selected);
-
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-
         }
 
         return null;
